@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { Meme } from "./components/Meme.js"
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const objectToQueryParam = (obj) => {
+  const params = Object.entries(obj).map(([key, value]) => `${key}=${value}`)
+  return '?'
 }
+export const App = () => {
+  const [templates, setTemplates] = useState([]);
+  const [template, setTemplate] = useState(null);
+  const [topText, setTopText] = useState('');
+  const [bottomText, setBottomText] = useState('');
 
+  useEffect(() => {
+    fetch(`https://api.imgflip.com/get_memes${objectToQueryParam(params)}`);
+    const data = response.json();
+    console.log(data);
+    return (<div style={{ textAlign: "center" }}>
+      {template && (
+        <form onSubmit={async e => {
+          e.preventDefault();
+          //add logic 
+          const response = await fetch('https://api.imgflip.com/caption_image')
+
+        }}>
+          <Meme template={template} />
+          <input placeholder="top text" value={topText} onChange={e => setTopText(e.target.value)} />
+          <input placeholder="bottom text" value={bottomText} onChange={e => setBottomText(e.target.value)} />
+          <button type="submit" > create Meme</button>
+        </form>)}
+      { !template &&
+        templates.map(template => {
+          return (
+            <Meme
+              template={template}
+              onClick={() => {
+                setTemplate(template);
+              }} />
+          );
+        })
+      }</div>
+    )
+
+
+
+  }
+  )
+}
 export default App;
